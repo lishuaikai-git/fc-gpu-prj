@@ -1,0 +1,30 @@
+edition: 1.0.0
+name: container-demo
+access: default
+vars:
+  region: cn-shenzhen
+services:
+  customContainer-demo:
+    component: devsapp/fc
+    props:
+      region: ${vars.region}
+      service:
+        name: tgpu_ffmpeg_service
+        internetAccess: true
+      function:
+        name: tgpu_ffmpeg_func
+        description: test gpu for ffmpeg
+        handler: not-used
+        timeout: 600
+        caPort: 9000
+        instanceType: fc.gpu.tesla.1
+        gpuMemorySize: 8192
+        cpu: 4
+        memorySize: 16384
+        diskSize: 512
+        runtime: custom-container
+        customContainerConfig:
+          # 1. 请检查阿里云ACR容器镜像仓库已提前创建相应的命名空间（namespace:demo）与仓库（repo:gpu-transcoding_s）。
+          # 2. 后续更新函数时，请修改此处的tag，由v0.1修改为v0.2后，重新执行s build && s deploy。
+          image: registry.cn-shanghai.aliyuncs.com/demo/gpu-transcoding_s:v0.1
+        codeUri: ./code
